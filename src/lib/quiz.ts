@@ -14,7 +14,7 @@ export interface QuizResult {
 }
 
 function formatValue(value: unknown, question: QuizQuestion): string {
-  if (question.type === "boolean") return value === true ? "正确" : "错误";
+  if (question.type === "boolean") return value === true || value === 0 ? "正确" : "错误";
   if (question.type === "single") {
     const idx = value as number;
     return question.options[idx] ?? "";
@@ -45,7 +45,11 @@ function correctLabel(question: QuizQuestion): string {
 }
 
 export function isAnswerCorrect(question: QuizQuestion, value: unknown): boolean {
-  if (question.type === "single" || question.type === "boolean") {
+  if (question.type === "boolean") {
+    const given = typeof value === "boolean" ? value : value === 0 ? true : value === 1 ? false : value;
+    return question.answer === given;
+  }
+  if (question.type === "single") {
     return question.answer === value;
   }
   if (question.type === "multiple") {

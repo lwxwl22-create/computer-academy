@@ -12,6 +12,15 @@ describe("quiz engine", () => {
   it("grades true false", () => {
     const q = trueFalse("q2", "天空是蓝色的", true, "通常");
     expect(isAnswerCorrect(q, true)).toBe(true);
+    expect(isAnswerCorrect(q, 0)).toBe(true);
+    expect(isAnswerCorrect(q, 1)).toBe(false);
+  });
+
+  it("grades false boolean with option index", () => {
+    const q = trueFalse("q2b", "内存越大就一定越快", false, "错误");
+    expect(isAnswerCorrect(q, 1)).toBe(true);
+    expect(isAnswerCorrect(q, 0)).toBe(false);
+    expect(isAnswerCorrect(q, false)).toBe(true);
   });
 
   it("grades fill with acceptable answers", () => {

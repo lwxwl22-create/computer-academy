@@ -244,9 +244,9 @@ function GpuExplorer() {
               {Array.from({ length: jobs }).map((_, i) => (
                 <motion.span
                   key={i}
-                  initial={{ opacity: 0.2, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.08 * i }}
+                  initial={{ opacity: 0.25, scale: 0.8 }}
+                  animate={{ opacity: [0.3, 1, 0.3], scale: [0.85, 1, 0.85] }}
+                  transition={{ delay: 0.08 * i, duration: 0.9, repeat: Infinity, repeatType: "reverse" }}
                   className="h-4 rounded bg-emerald-400/70"
                 />
               ))}
