@@ -36,7 +36,10 @@ function QuestionView({
           const isRight =
             submitted &&
             (q.type === "boolean" ? (i === 0 ? q.answer === true : q.answer === false) : q.answer === i);
-          const isWrongPick = submitted && selected && q.answer !== i;
+          const isWrongPick =
+            submitted &&
+            selected &&
+            (q.type === "boolean" ? (i === 0 ? q.answer !== true : q.answer !== false) : q.answer !== i);
           return (
             <button
               key={i}

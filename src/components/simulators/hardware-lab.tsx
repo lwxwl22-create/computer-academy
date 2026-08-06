@@ -198,7 +198,7 @@ function SsdExplorer() {
 }
 
 function GpuExplorer() {
-  const [mode, setMode] = useState<"cpu" | "gpu">("cpu");
+  const [mode, setMode] = useState<"cpu" | "gpu">("gpu");
   const jobs = 12;
 
   return (
@@ -280,7 +280,9 @@ const tabs = [
 ] as const;
 
 export function HardwareLab({ kind }: { kind: string }) {
-  const [activeTab, setActiveTab] = useState<string>(kind in ["cpu", "memory", "ssd", "gpu"] ? kind : "cpu");
+  const [activeTab, setActiveTab] = useState<string>(
+    ["cpu", "memory", "ssd", "gpu"].includes(kind) ? kind : "cpu",
+  );
   const Active = tabs.find((t) => t.id === activeTab)?.comp ?? CpuExplorer;
 
   return (

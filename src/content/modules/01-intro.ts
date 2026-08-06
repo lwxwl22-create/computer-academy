@@ -50,6 +50,12 @@ export const module01: CourseModule = {
           text: "CPU 决定算得快不快，内存决定同时能干几件事，硬盘决定东西装得多不多、开机快不快。",
         },
         {
+          type: "simulator",
+          kind: "gpu",
+          title: "看看 GPU 怎么并行工作",
+          description: "GPU 有上千个小核心，能同时处理大量简单任务；点击对比 CPU 和 GPU 的处理速度。",
+        },
+        {
           type: "analogy",
           title: "厨房类比",
           text: "把电脑想象成一家餐厅：CPU 是主厨，内存是灶台前的操作台，硬盘是冰箱和仓库，GPU 是负责摆盘的艺术师，主板是连接后厨所有区域的通道。",
