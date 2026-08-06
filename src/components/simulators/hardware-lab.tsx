@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 function CpuExplorer() {
   const [active, setActive] = useState<string | null>("core");
+  const [selectedBlock, setSelectedBlock] = useState<number | null>(0);
   const [spin, setSpin] = useState(false);
 
   const parts = [
@@ -34,9 +35,17 @@ function CpuExplorer() {
             {Array.from({ length: 9 }).map((_, i) => (
               <motion.div
                 key={i}
-                whileHover={{ scale: 1.15, backgroundColor: "rgba(129,140,248,0.35)" }}
-                onClick={() => setActive(i < 2 ? "core" : i < 5 ? "cache" : i < 7 ? "imc" : "igpu")}
-                className="cursor-pointer rounded-md bg-indigo-400/20"
+                whileHover={{ scale: 1.15 }}
+                onClick={() => {
+                  setSelectedBlock(i);
+                  setActive(i < 2 ? "core" : i < 5 ? "cache" : i < 7 ? "imc" : "igpu");
+                }}
+                className={cn(
+                  "cursor-pointer rounded-md transition-colors",
+                  selectedBlock === i
+                    ? "bg-indigo-300/80 ring-2 ring-indigo-200/70"
+                    : "bg-indigo-400/20 hover:bg-indigo-400/40",
+                )}
               />
             ))}
           </div>
@@ -119,8 +128,8 @@ function MemoryExplorer() {
           </div>
           {running && (
             <motion.div
-              animate={{ x: [0, 70, 70, 0], y: [0, -26, -60, -26] }}
-              transition={{ repeat: Infinity, duration: 2.6, ease: "easeInOut" }}
+              animate={{ x: [0, 80, 80, 190, 190, 80, 80, 0], y: [0, -6, -6, -12, -12, -6, -6, 0] }}
+              transition={{ repeat: Infinity, duration: 3.4, ease: "easeInOut" }}
               className="z-10 h-5 w-5 rounded-full bg-sky-400 shadow-[0_0_16px_rgba(56,189,248,0.8)]"
             />
           )}
@@ -247,7 +256,7 @@ function GpuExplorer() {
                   initial={{ opacity: 0.25, scale: 0.8 }}
                   animate={{ opacity: [0.3, 1, 0.3], scale: [0.85, 1, 0.85] }}
                   transition={{ delay: 0.08 * i, duration: 0.9, repeat: Infinity, repeatType: "reverse" }}
-                  className="h-4 rounded bg-emerald-400/70"
+                  className="h-4 w-6 rounded bg-emerald-400/70"
                 />
               ))}
             </motion.div>
