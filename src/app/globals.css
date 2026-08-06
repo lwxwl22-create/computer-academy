@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(0.985 0.004 240);
+  --foreground: oklch(0.16 0.02 260);
+  --card: oklch(1 0 0 / 0.82);
+  --card-foreground: oklch(0.16 0.02 260);
+  --popover: oklch(1 0 0 / 0.96);
+  --popover-foreground: oklch(0.16 0.02 260);
+  --primary: oklch(0.55 0.19 265);
+  --primary-foreground: oklch(0.99 0.005 240);
+  --secondary: oklch(0.94 0.02 250);
+  --secondary-foreground: oklch(0.3 0.06 265);
+  --muted: oklch(0.94 0.015 250);
+  --muted-foreground: oklch(0.5 0.03 260);
+  --accent: oklch(0.94 0.04 265);
+  --accent-foreground: oklch(0.3 0.08 265);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(0.99 0.005 240);
+  --border: oklch(0.9 0.02 250 / 0.9);
+  --input: oklch(0.88 0.02 250);
+  --ring: oklch(0.6 0.16 265);
+  --radius: 0.625rem;
+  --grid: oklch(0.8 0.02 250 / 0.4);
+}
+
+.dark {
+  --background: oklch(0.14 0.02 265);
+  --foreground: oklch(0.96 0.01 250);
+  --card: oklch(0.19 0.025 265 / 0.75);
+  --card-foreground: oklch(0.96 0.01 250);
+  --popover: oklch(0.2 0.025 265 / 0.97);
+  --popover-foreground: oklch(0.96 0.01 250);
+  --primary: oklch(0.72 0.14 265);
+  --primary-foreground: oklch(0.15 0.03 265);
+  --secondary: oklch(0.25 0.03 265);
+  --secondary-foreground: oklch(0.93 0.02 250);
+  --muted: oklch(0.24 0.03 265);
+  --muted-foreground: oklch(0.68 0.025 260);
+  --accent: oklch(0.28 0.05 265);
+  --accent-foreground: oklch(0.95 0.015 250);
+  --destructive: oklch(0.62 0.2 25);
+  --destructive-foreground: oklch(0.98 0.01 240);
+  --border: oklch(0.32 0.03 265 / 0.85);
+  --input: oklch(0.3 0.03 265);
+  --ring: oklch(0.65 0.13 265);
+  --grid: oklch(0.55 0.03 265 / 0.22);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-aurora: aurora 12s ease-in-out infinite alternate;
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes aurora {
+  0% { transform: translate3d(-6%, -4%, 0) scale(1); opacity: 0.55; }
+  50% { transform: translate3d(5%, 4%, 0) scale(1.12); opacity: 0.8; }
+  100% { transform: translate3d(-3%, 6%, 0) scale(1.05); opacity: 0.6; }
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--primary) 28%, transparent);
+}
+
+.glass {
+  background: color-mix(in oklab, var(--card) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  box-shadow: 0 18px 50px -22px oklch(0.2 0.06 265 / 0.35);
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 75% 60% at 50% 40%, black 30%, transparent 75%);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.card-hover {
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 24px 60px -24px oklch(0.2 0.08 265 / 0.45);
+  border-color: color-mix(in oklab, var(--ring) 45%, var(--border));
+}
+
+.prism-light {
+  filter: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.markdown-body {
+  line-height: 1.75;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  font-weight: 650;
+}
+
+.markdown-body ul, .markdown-body ol {
+  padding-left: 1.4em;
+  margin: 0.6em 0;
+}
+
+.markdown-body ul { list-style: disc; }
+.markdown-body ol { list-style: decimal; }
+
+.markdown-body blockquote {
+  border-left: 3px solid var(--ring);
+  padding-left: 1em;
+  color: var(--muted-foreground);
+  margin: 0.8em 0;
+}
+
+.markdown-body code {
+  background: var(--muted);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+}
+
+.markdown-body pre {
+  background: var(--secondary);
+  border-radius: 10px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 0.8em 0;
+}
+
+.markdown-body pre code {
+  background: transparent;
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
