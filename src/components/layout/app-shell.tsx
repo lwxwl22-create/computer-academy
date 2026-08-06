@@ -48,6 +48,7 @@ function NavLinks({ onNavigate, mobile }: { onNavigate?: () => void; mobile?: bo
           <Link
             key={item.href}
             href={item.href}
+            prefetch={false}
             onClick={onNavigate}
             className={cn(
               "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",

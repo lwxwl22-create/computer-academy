@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LessonRow } from "@/components/course/course-cards";
 import { Icon } from "@/components/icon";
+import { Certificate } from "@/components/gamification/gamification";
 import { formatMinutes } from "@/lib/utils";
 
 export function ModulePage({ mod }: { mod: CourseModule }) {
@@ -52,6 +53,12 @@ export function ModulePage({ mod }: { mod: CourseModule }) {
         <div className="mt-5 flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-6 text-amber-700 dark:text-amber-300">
           <Info className="mt-0.5 h-4 w-4 shrink-0" />
           本模块为结构化初版内容：目标、知识点、练习和测验均已可用，正文深度会持续完善。
+        </div>
+      )}
+
+      {percent === 1 && (
+        <div className="mt-8">
+          <Certificate moduleTitle={mod.title} />
         </div>
       )}
 

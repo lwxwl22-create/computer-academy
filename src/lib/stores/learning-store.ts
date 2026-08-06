@@ -117,6 +117,11 @@ export const useLearningStore = create<LearningState>()(
           d.date === date ? { ...d, lessons: d.lessons + 1, minutes: d.minutes + minutes, xp: d.xp + XP_PER_LESSON } : d,
         );
         const taskResult = bumpTask(state, "task-learn");
+        const minuteTask = bumpTask(
+          { ...state, dailyTasks: taskResult.dailyTasks },
+          "task-minutes",
+          minutes,
+        );
         const streakDays = Array.from(new Set([...state.streakDays, date]));
         const recentLessons = [lessonId, ...state.recentLessons.filter((id) => id !== lessonId)].slice(0, 12);
         set({
@@ -125,9 +130,9 @@ export const useLearningStore = create<LearningState>()(
           completedLessons,
           recentLessons,
           totalMinutes: state.totalMinutes + minutes,
-          xp: state.xp + XP_PER_LESSON + taskResult.taskXp,
+          xp: state.xp + XP_PER_LESSON + taskResult.taskXp + minuteTask.taskXp,
           studyDays,
-          dailyTasks: taskResult.dailyTasks,
+          dailyTasks: minuteTask.dailyTasks,
           streakDays,
           lastActiveDate: date,
         });
@@ -226,6 +231,7 @@ export const useLearningStore = create<LearningState>()(
     {
       name: "computer-academy-learning",
       version: 1,
+      skipHydration: true,
       partialize: (state) => ({
         completedLessons: state.completedLessons,
         startedLessons: state.startedLessons,

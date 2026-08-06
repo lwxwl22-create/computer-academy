@@ -52,6 +52,6 @@ export const useAssistantStore = create<AssistantState>()(
         });
       },
     }),
-    { name: "computer-academy-assistant", version: 1 },
+    { name: "computer-academy-assistant", version: 1, skipHydration: true },
   ),
 );

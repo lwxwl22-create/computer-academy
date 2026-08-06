@@ -98,8 +98,8 @@ export function SkillTree() {
         return (
           <motion.div
             key={m.slug}
-            initial={{ opacity: 0, x: i % 2 ? 24 : -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className={cn(
               "relative rounded-2xl border bg-card p-4 sm:ml-12 lg:ml-0 lg:w-[calc(50%-28px)]",

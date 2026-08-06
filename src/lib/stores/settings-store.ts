@@ -26,6 +26,6 @@ export const useSettingsStore = create<SettingsState>()(
       setReduceMotion: (reduceMotion) => set({ reduceMotion }),
       setShowGuide: (showGuide) => set({ showGuide }),
     }),
-    { name: "computer-academy-settings", version: 1 },
+    { name: "computer-academy-settings", version: 1, skipHydration: true },
   ),
 );

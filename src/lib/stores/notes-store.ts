@@ -36,6 +36,6 @@ export const useNotesStore = create<NotesState>()(
       },
       clearNotes: () => set({ notes: [] }),
     }),
-    { name: "computer-academy-notes", version: 1 },
+    { name: "computer-academy-notes", version: 1, skipHydration: true },
   ),
 );

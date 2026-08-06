@@ -44,7 +44,7 @@ export function SettingsView() {
               <Label>主题</Label>
               <p className="mt-1 text-xs text-muted-foreground">跟随系统自动切换深浅色。</p>
             </div>
-            <Select value={theme} onValueChange={(v) => setTheme(v)} disabled={!hydrated}>
+            <Select value={hydrated ? theme : "system"} onValueChange={(v) => setTheme(v)} disabled={!hydrated}>
               <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="system">跟随系统</SelectItem>
