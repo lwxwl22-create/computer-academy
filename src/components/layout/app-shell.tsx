@@ -140,9 +140,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1">{children}</main>
 
       <footer className="border-t py-8">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row">
-          <p>Computer Academy · 从零开始，系统学习电脑知识。</p>
-          <p className="text-xs">数据保存在本机浏览器，随时继续学习。</p>
+        <div className="mx-auto w-full max-w-7xl space-y-3 px-4 text-sm text-muted-foreground">
+          <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p>Computer Academy · 从零开始，系统学习电脑知识。</p>
+            <p className="text-xs">数据保存在本机浏览器，随时继续学习。</p>
+          </div>
+          <p className="border-t pt-3 text-center text-xs leading-5">
+            免责声明：本平台课程内容由 AI 辅助生成，仅供学习参考，可能存在偏差或不完整。涉及系统设置、软件安装、安全与恢复等关键操作时，请以官方文档为准；重要数据请自行做好备份。
+          </p>
         </div>
       </footer>
 

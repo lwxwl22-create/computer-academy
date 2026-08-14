@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, Moon, Timer, Trash2 } from "lucide-react";
+import { AlertTriangle, Moon, Sparkles, Timer, Trash2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -87,6 +87,18 @@ export function SettingsView() {
               </SelectContent>
             </Select>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle className="flex items-center gap-2 text-base"><Sparkles className="h-4 w-4" /> 关于内容</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs leading-6 text-muted-foreground">
+            本平台的课程文字、测验与模拟器说明由 AI 辅助生成，用于系统化学习。AI 内容可能产生幻觉或细节过时，请以微软、Office 厂商等官方文档为准；执行删除、格式化、重装等操作前，先备份重要数据。
+          </p>
+          <p className="text-xs leading-6 text-muted-foreground">
+            学习进度保存在本机，清理浏览器数据前请先导出或备份你的笔记。
+          </p>
         </CardContent>
       </Card>
 

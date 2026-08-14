@@ -181,6 +181,9 @@ function ModuleShowcase() {
         <div>
           <p className="text-sm font-semibold text-primary">课程模块</p>
           <h2 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">十二大模块，一条成长路线</h2>
+          <p className="mt-2 max-w-2xl text-xs leading-5 text-muted-foreground">
+            内容由 AI 辅助生成，仅供学习参考；系统与安全操作请以官方文档为准，重要数据记得先备份。
+          </p>
         </div>
         <Link href="/courses/" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
           查看全部课程 <ArrowRight className="h-4 w-4" />
