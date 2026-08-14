@@ -98,6 +98,7 @@ export type SimulatorKey =
   | "powerpoint"
   | "pdf"
   | "config-builder"
+  | "maintenance"
   | "prompt-coach"
   | "python"
   | "html"

@@ -30,6 +30,7 @@ import { HardwareLab } from "@/components/simulators/hardware-lab";
 import { WindowsSimulator } from "@/components/simulators/windows-simulator";
 import { OfficeSimulator } from "@/components/simulators/office-simulators";
 import { ConfigBuilder } from "@/components/simulators/config-builder";
+import { MaintenanceLab } from "@/components/simulators/maintenance-lab";
 import { PromptCoach } from "@/components/simulators/prompt-coach";
 import { CodePlayground } from "@/components/simulators/code-playground";
 import { QuizRunner } from "@/components/course/quiz-runner";
@@ -49,6 +50,7 @@ function SimulatorSlot({ kind }: { kind: string }) {
     return <OfficeSimulator kind={kind} />;
   }
   if (kind === "config-builder") return <ConfigBuilder />;
+  if (kind === "maintenance") return <MaintenanceLab />;
   if (kind === "prompt-coach") return <PromptCoach />;
   if (kind === "python" || kind === "html") return <CodePlayground kind={kind} />;
   return null;
