@@ -1,6 +1,17 @@
 "use client";
 
-import { Bold, Italic, Printer, Underline } from "lucide-react";
+import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Bold,
+  CalendarPlus,
+  Italic,
+  Printer,
+  Redo2,
+  Undo2,
+  Underline,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +25,37 @@ function WordSimulator() {
   const [italic, setItalic] = useState(false);
   const [underline, setUnderline] = useState(false);
   const [fontSize, setFontSize] = useState(16);
+  const [align, setAlign] = useState<"left" | "center" | "right">("left");
+  const [history, setHistory] = useState<string[]>([
+    "这是一篇课程报告。电脑的 CPU 是大脑，内存是工作台，硬盘是仓库。",
+  ]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
+  function updateText(next: string) {
+    const nextHistory = history.slice(0, historyIndex + 1);
+    nextHistory.push(next);
+    setHistory(nextHistory);
+    setHistoryIndex(nextHistory.length - 1);
+    setText(next);
+  }
+
+  function undo() {
+    if (historyIndex <= 0) return;
+    setHistoryIndex((i) => i - 1);
+    setText(history[historyIndex - 1]);
+  }
+
+  function redo() {
+    if (historyIndex >= history.length - 1) return;
+    setHistoryIndex((i) => i + 1);
+    setText(history[historyIndex + 1]);
+  }
+
+  function insertDate() {
+    const date = new Date().toLocaleDateString("zh-CN");
+    updateText(text ? text + "\n\n（日期：2026 年 8 月 14 日）" : "（日期：2026 年 8 月 14 日）");
+    void date;
+  }
 
   return (
     <div className="space-y-3">
@@ -26,6 +68,26 @@ function WordSimulator() {
         </Button>
         <Button size="iconSm" variant={underline ? "default" : "ghost"} onClick={() => setUnderline((v) => !v)} title="下划线 Ctrl+U">
           <Underline className="h-4 w-4" />
+        </Button>
+        <span className="mx-0.5 h-6 w-px bg-border" />
+        <Button size="iconSm" variant={align === "left" ? "default" : "ghost"} onClick={() => setAlign("left")} title="左对齐">
+          <AlignLeft className="h-4 w-4" />
+        </Button>
+        <Button size="iconSm" variant={align === "center" ? "default" : "ghost"} onClick={() => setAlign("center")} title="居中">
+          <AlignCenter className="h-4 w-4" />
+        </Button>
+        <Button size="iconSm" variant={align === "right" ? "default" : "ghost"} onClick={() => setAlign("right")} title="右对齐">
+          <AlignRight className="h-4 w-4" />
+        </Button>
+        <span className="mx-0.5 h-6 w-px bg-border" />
+        <Button size="iconSm" variant="ghost" onClick={undo} disabled={historyIndex <= 0} title="撤销 Ctrl+Z">
+          <Undo2 className="h-4 w-4" />
+        </Button>
+        <Button size="iconSm" variant="ghost" onClick={redo} disabled={historyIndex >= history.length - 1} title="重做">
+          <Redo2 className="h-4 w-4" />
+        </Button>
+        <Button size="iconSm" variant="ghost" onClick={insertDate} title="插入日期">
+          <CalendarPlus className="h-4 w-4" />
         </Button>
         <select
           value={fontSize}
@@ -41,13 +103,14 @@ function WordSimulator() {
       </div>
       <textarea
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => updateText(e.target.value)}
         className="min-h-[180px] w-full resize-y rounded-lg border bg-background p-4 leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring"
         style={{
           fontWeight: bold ? 700 : 400,
           fontStyle: italic ? "italic" : "normal",
           textDecoration: underline ? "underline" : "none",
           fontSize,
+          textAlign: align,
         }}
       />
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -68,6 +131,13 @@ function ExcelSimulator() {
   const [scores, setScores] = useState(rows);
   const [formula, setFormula] = useState("=AVERAGE(C2:C5)");
   const [result, setResult] = useState<number | string>(86);
+  const [sortDir, setSortDir] = useState<"none" | "asc" | "desc">("none");
+  const [filterHigh, setFilterHigh] = useState(false);
+
+  const displayRows = scores
+    .filter((r) => !filterHigh || r.score >= 80)
+    .slice()
+    .sort((a, b) => (sortDir === "asc" ? a.score - b.score : sortDir === "desc" ? b.score - a.score : a.id - b.id));
 
   function runFormula() {
     const f = formula.trim().toUpperCase();
@@ -82,14 +152,36 @@ function ExcelSimulator() {
       setResult(Math.min(...values));
     } else if (f.startsWith("=COUNT(")) {
       setResult(values.length);
+    } else if (/^=IF\(/.test(f)) {
+      const condition = f.match(/IF\((.+?),/i)?.[1] ?? "";
+      const yes = f.match(/,\s*"([^"]+)"\s*,/)?.[1] ?? "是";
+      const no = f.match(/,\s*"([^"]+)"\s*\)$/)?.[1] ?? "否";
+      const [left, op, right] = condition.replace(/C\d:C\d/g, String(values[0])).match(/(.+?)(>=|<=|>|<|=)(.+)/)?.slice(1) ?? [];
+      const l = Number(left);
+      const r = Number(right);
+      const ok =
+        op === ">=" ? l >= r : op === "<=" ? l <= r : op === ">" ? l > r : op === "<" ? l < r : l === r;
+      setResult(ok ? yes : no);
     } else {
-      setResult("公式暂不支持，试试 SUM/AVERAGE/MAX/MIN");
+      setResult("公式暂不支持，试试 SUM/AVERAGE/MAX/MIN/IF");
     }
   }
 
   return (
     <div className="space-y-3">
       <div className="overflow-x-auto rounded-lg border">
+        <div className="flex flex-wrap items-center gap-2 border-b bg-muted/40 p-2">
+          <Button size="sm" variant={sortDir === "asc" ? "default" : "outline"} onClick={() => setSortDir(sortDir === "asc" ? "none" : "asc")}>
+            成绩升序
+          </Button>
+          <Button size="sm" variant={sortDir === "desc" ? "default" : "outline"} onClick={() => setSortDir(sortDir === "desc" ? "none" : "desc")}>
+            成绩降序
+          </Button>
+          <Button size="sm" variant={filterHigh ? "default" : "outline"} onClick={() => setFilterHigh((v) => !v)}>
+            只显示 ≥80
+          </Button>
+          <span className="ml-auto text-[11px] text-muted-foreground">数据 → 排序和筛选</span>
+        </div>
         <table className="w-full min-w-[420px] border-collapse text-sm">
           <thead>
             <tr className="bg-muted">
@@ -99,7 +191,7 @@ function ExcelSimulator() {
             </tr>
           </thead>
           <tbody>
-            {scores.map((r) => (
+            {displayRows.map((r) => (
               <tr key={r.id}>
                 <td className="border px-3 py-1.5 text-muted-foreground">{r.id}</td>
                 <td className="border px-3 py-1.5">{r.name}</td>
@@ -143,6 +235,14 @@ function PptSimulator() {
   ];
   const [order, setOrder] = useState(slides);
   const [selected, setSelected] = useState<number | null>(null);
+  const [theme, setTheme] = useState("from-sky-500 to-indigo-500");
+
+  const themes = [
+    { id: "from-sky-500 to-indigo-500", name: "科技蓝" },
+    { id: "from-violet-500 to-fuchsia-500", name: "霓虹紫" },
+    { id: "from-amber-500 to-orange-500", name: "暖橙" },
+    { id: "from-emerald-500 to-teal-500", name: "薄荷绿" },
+  ];
 
   function move(delta: number) {
     if (selected === null) return;
@@ -158,6 +258,20 @@ function PptSimulator() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <div className="space-y-2">
+        <div className="flex flex-wrap gap-1.5">
+          {themes.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTheme(t.id)}
+              className={cn(
+                "rounded-full border px-2.5 py-1 text-[11px] transition-colors",
+                theme === t.id ? "border-primary bg-primary/10 text-foreground" : "text-muted-foreground hover:bg-accent",
+              )}
+            >
+              {t.name}
+            </button>
+          ))}
+        </div>
         {order.map((s, i) => (
           <button
             key={s.id}
@@ -180,10 +294,12 @@ function PptSimulator() {
       </div>
       <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 p-6">
         <div className="h-full w-full rounded-lg bg-gradient-to-br from-white to-slate-100 p-6 text-slate-900 shadow-2xl">
-          <p className="text-[10px] uppercase tracking-widest text-slate-400">Computer Academy</p>
+          <div className={cn("inline-flex rounded-full bg-gradient-to-r px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white", theme)}>
+            Computer Academy
+          </div>
           <p className="mt-6 text-lg font-bold">{order[0]?.title}</p>
-          <div className="mt-4 h-2 w-24 rounded bg-slate-300" />
-          <div className="mt-2 h-2 w-32 rounded bg-slate-200" />
+          <div className={cn("mt-4 h-2 w-24 rounded bg-gradient-to-r opacity-70", theme)} />
+          <div className={cn("mt-2 h-2 w-32 rounded bg-gradient-to-r opacity-40", theme)} />
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] text-slate-400">模拟演示视图</div>
         </div>
       </div>
@@ -195,6 +311,9 @@ function PdfSimulator() {
   const [name, setName] = useState("张三");
   const [major, setMajor] = useState("计算机科学");
   const [signed, setSigned] = useState(false);
+  const [duplex, setDuplex] = useState(false);
+  const [fitPage, setFitPage] = useState(false);
+  const [copies, setCopies] = useState(1);
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -214,6 +333,25 @@ function PdfSimulator() {
         <Button size="sm" onClick={() => window.print()} className="gap-2">
           <Printer className="h-4 w-4" /> 打印 / 另存为 PDF
         </Button>
+        <div className="rounded-lg border bg-muted/40 p-3 text-xs">
+          <p className="mb-2 font-medium text-foreground">打印设置</p>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-muted-foreground">份数</span>
+            <div className="flex items-center gap-1">
+              <Button size="iconSm" variant="outline" onClick={() => setCopies((c) => Math.max(1, c - 1))}>-</Button>
+              <span className="w-6 text-center">{copies}</span>
+              <Button size="iconSm" variant="outline" onClick={() => setCopies((c) => Math.min(9, c + 1))}>+</Button>
+            </div>
+          </div>
+          <label className="mt-2 flex items-center justify-between gap-2">
+            <span className="text-muted-foreground">双面（长边翻转）</span>
+            <input type="checkbox" checked={duplex} onChange={(e) => setDuplex(e.target.checked)} className="h-4 w-4" />
+          </label>
+          <label className="mt-2 flex items-center justify-between gap-2">
+            <span className="text-muted-foreground">适合页面（防表格切边）</span>
+            <input type="checkbox" checked={fitPage} onChange={(e) => setFitPage(e.target.checked)} className="h-4 w-4" />
+          </label>
+        </div>
         <p className="text-xs text-muted-foreground">
           真实操作：Word/浏览器里 Ctrl+P → 目标打印机选「Microsoft Print to PDF」→ 保存。
         </p>
@@ -246,7 +384,9 @@ function PdfSimulator() {
         </div>
         <div className="absolute bottom-6 left-6 right-6 flex justify-between text-[10px] text-slate-400">
           <span>PDF 模拟</span>
-          <span>1 / 1</span>
+          <span>
+            {copies} 份 · {duplex ? "双面" : "单面"} · {fitPage ? "适合页面" : "实际大小"}
+          </span>
         </div>
       </div>
     </div>

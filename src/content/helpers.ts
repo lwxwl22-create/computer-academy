@@ -1,5 +1,6 @@
 import {
   CourseModule,
+  ContentBlock,
   Difficulty,
   Lesson,
   QuizQuestion,
@@ -24,6 +25,7 @@ export interface QuickLessonOptions {
   quiz: QuizQuestion[];
   tags: string[];
   simulator?: SimulatorKey;
+  blocks?: ContentBlock[];
   draft?: boolean;
 }
 
@@ -39,6 +41,7 @@ export function quickLesson(opts: QuickLessonOptions): Lesson {
     content: [
       { type: "paragraph", text: opts.overview },
       ...opts.points.map((p) => ({ type: "card" as const, title: p.title, text: p.text })),
+      ...(opts.blocks ?? []),
       ...(opts.analogy
         ? [{ type: "analogy" as const, title: "生活类比", text: opts.analogy }]
         : []),
