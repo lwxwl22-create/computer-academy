@@ -1,12 +1,23 @@
 "use client";
 
-import { AlertTriangle, Moon, Sparkles, Timer, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  CloudDownload,
+  CloudUpload,
+  LogOut,
+  Moon,
+  Sparkles,
+  Timer,
+  Trash2,
+  UserRound,
+} from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLearningStore } from "@/lib/stores/learning-store";
 import { useNotesStore } from "@/lib/stores/notes-store";
 import { useSettingsStore } from "@/lib/stores/settings-store";
+import { useAuthStore } from "@/lib/stores/auth-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,6 +39,28 @@ export function SettingsView() {
   const settings = useSettingsStore();
   const clearLearning = useLearningStore((s) => s.clearAll);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const authUser = useAuthStore((s) => s.user);
+  const authStatus = useAuthStore((s) => s.status);
+  const authConfigured = useAuthStore((s) => s.configured);
+  const lastSyncedAt = useAuthStore((s) => s.lastSyncedAt);
+  const authError = useAuthStore((s) => s.error);
+  const initialize = useAuthStore((s) => s.initialize);
+  const signOut = useAuthStore((s) => s.signOut);
+  const syncUp = useAuthStore((s) => s.syncLocalToCloud);
+  const syncDown = useAuthStore((s) => s.syncCloudToLocal);
+  const clearError = useAuthStore((s) => s.clearError);
+  const [syncing, setSyncing] = useState<"up" | "down" | null>(null);
+
+  useEffect(() => {
+    void initialize();
+  }, [initialize]);
+
+  async function runSync(kind: "up" | "down") {
+    setSyncing(kind);
+    const ok = kind === "up" ? await syncUp() : await syncDown();
+    setSyncing(null);
+    if (ok) toast.success(kind === "up" ? "本地数据已上传到云端" : "云端数据已同步到本机");
+  }
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-6 px-4 py-10">
@@ -99,6 +132,54 @@ export function SettingsView() {
           <p className="text-xs leading-6 text-muted-foreground">
             学习进度保存在本机，清理浏览器数据前请先导出或备份你的笔记。
           </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle className="flex items-center gap-2 text-base"><UserRound className="h-4 w-4" /> 账号与云同步</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          {!authConfigured && (
+            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-5 text-amber-700 dark:text-amber-300">
+              Supabase 尚未配置：在项目根目录的 .env 中填入 NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY，并执行 supabase/schema.sql 后重启构建即可启用。
+            </p>
+          )}
+          <div className="flex items-center justify-between gap-3 rounded-lg border bg-muted/40 p-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium">{authUser ? authUser.email : "未登录"}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {authStatus === "loading"
+                  ? "正在恢复登录状态…"
+                  : authUser
+                    ? lastSyncedAt
+                      ? `上次同步：${new Date(lastSyncedAt).toLocaleString("zh-CN")}`
+                      : "已登录，尚未同步数据"
+                    : "登录后可以跨设备同步学习进度、笔记与 XP"}
+              </p>
+            </div>
+            {authUser && (
+              <Button variant="outline" size="sm" onClick={async () => { await signOut(); toast.success("已退出登录"); }}>
+                <LogOut className="h-3.5 w-3.5" /> 退出
+              </Button>
+            )}
+          </div>
+
+          {authUser && (
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" onClick={() => runSync("up")} disabled={syncing !== null}>
+                <CloudUpload className="h-3.5 w-3.5" /> {syncing === "up" ? "上传中…" : "上传本机数据"}
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => runSync("down")} disabled={syncing !== null}>
+                <CloudDownload className="h-3.5 w-3.5" /> {syncing === "down" ? "下载中…" : "从云端恢复"}
+              </Button>
+            </div>
+          )}
+
+          {authError && (
+            <p className="rounded-lg bg-destructive/10 p-2.5 text-xs leading-5 text-destructive">
+              {authError}
+              <button className="ml-2 underline" onClick={clearError}>关闭</button>
+            </p>
+          )}
         </CardContent>
       </Card>
 

@@ -20,6 +20,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { AccountMenu } from "@/components/layout/account-menu";
 import { CommandMenu } from "@/components/command-menu";
 import { AssistantChat } from "@/components/assistant/assistant-chat";
 import { useLearningStore } from "@/lib/stores/learning-store";
@@ -125,6 +126,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               <Search className="h-4 w-4" />
             </Button>
+            <AccountMenu />
             <ThemeToggle />
           </div>
         </div>
